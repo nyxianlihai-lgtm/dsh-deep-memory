@@ -319,3 +319,52 @@ test('12 400 条事实：写入不崩，注入仍在预算内', () => {
   assert.ok(data.facts.length >= 300, '落盘后条数不能丢')
   assert.ok(existsSync(join(home, 'deep-memory', 'w-cap.json')))
 })
+
+// ---------------- 13. 宿主注入的消息不能当查询词 ----------------
+
+test('13 每轮注入的 runtime context 不能顶替用户这句话当查询词', async () => {
+  const home = freshHome('inject')
+  const cwd = freshDir('proj-inject')
+
+  const timeCtx = {
+    type: 'user/message',
+    data: {
+      message: {
+        source: { kind: 'time-context', form: 'snapshot' },
+        content: [{ type: 'text', text: 'Time sampled while preparing turn 1, step 1: 2026-10-31T19:16:00+08:00' }],
+      },
+    },
+  }
+  const catalog = {
+    type: 'user/message',
+    data: {
+      message: {
+        source: { kind: 'skill-catalog' },
+        content: [{ type: 'text', text: '<system-reminder> The available skill catalog changed.' }],
+      },
+    },
+  }
+  const real = {
+    type: 'user/message',
+    data: {
+      message: {
+        source: { kind: 'user', rpcId: 'r1' },
+        content: [{ type: 'text', text: '你的名字是什么' }],
+      },
+    },
+  }
+
+  // 真实消息在前，两条注入在后 —— 没有修复时会取到最后那条时间戳
+  const w = fakeWorld([real, timeCtx, catalog], { id: 'sN', cwd })
+  mod.apply(w.ctx)
+  await tool(w, 'remember').execute(
+    { text: '我的名字之一是小鱼', scope: 'global', importance: 0.8 },
+    { agent: w.agent },
+  )
+
+  const out = w.state.contexts[0].text()
+  // 召回是靠查询词驱动的：如果这里取到的是最后那条时间戳，tokens 里没有「名/字」，
+  // 「小鱼」这条根本进不来。所以这一条断言同时证明了查询词取对了。
+  assert.match(out, /小鱼/, '用「你的名字是什么」问，应该召回名字那条')
+  assert.doesNotMatch(out, /Time sampled/, '注入的时间戳不能出现在召回结果里')
+})
