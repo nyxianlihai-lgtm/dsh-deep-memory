@@ -1,5 +1,7 @@
 # HANDOFF · dsh-deep-memory
 
+> 当前风险与验证边界以 [RISKS.md](RISKS.md) 为准。本文包含设计目标及历史记录，不代表所有能力均已全面验证。
+
 > 给下一个接手的人 / AI：这里说清楚**做到了哪一步、什么验证过、什么没验证、从哪接着做**。
 > 需求合同在 [REQUIREMENTS.md](REQUIREMENTS.md)，用户视角在 [README.md](README.md)。
 
@@ -9,7 +11,7 @@
 
 一套**独立**的 DSH 长期记忆插件：两层存储（global / workspace）、事实键 + supersede、
 pending 生命周期、时间衰减、IDF 召回、三道闸、预算注入；三个工具；每轮注入走
-`systemPrompt.context`（不毁缓存），常驻提示走 `systemPrompt.section`（内容恒定）；
+`systemPrompt.context`（用于减少提示变化，实际缓存命中未验证），常驻提示走 `systemPrompt.section`（内容恒定）；
 每 N 轮在后台用**当前会话的模型**提炼一次。
 
 **没有** import `bot/` 里任何东西，**没有**修改任何原文件。所有交付物都在 `dsh-deep-memory/` 下。
@@ -107,7 +109,7 @@ node --test "test/*.test.mjs"     # 或 npm test
 2. **`interpolate: false`**。否则记忆里一句 `{{time}}` 就让整间会话每轮报错。
 3. **scope 用 cwd 的哈希**，不用会话 id：会话关了记忆还在，换会话还能接上；项目之间不会串。
 4. **单写者**：不要为「共享库」再开第二个进程写。
-5. **不自动删**：淡忘只降低命中率，`dedupe` 只合并不丢信息。
+5. **不自动删**：淡忘只降低命中率，`dedupe` 会合并相似条目，不能保证无损保留所有差异。
 
 ---
 

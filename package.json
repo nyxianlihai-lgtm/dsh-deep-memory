@@ -23,6 +23,7 @@
     "viz-kit/start.cmd",
     "cordis.patch.yml",
     "README.md",
+    "RISKS.md",
     "REQUIREMENTS.md",
     "HANDOFF.md",
     "LICENSE"
