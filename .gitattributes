@@ -1,0 +1,10 @@
+# 统一换行，避免 Windows 上提交、Linux 上拉下来全是改动
+* text=auto eol=lf
+
+# Windows 批处理必须是 CRLF，否则某些分支语句会挂
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+*.png binary
+*.jpg binary
+*.ico binary

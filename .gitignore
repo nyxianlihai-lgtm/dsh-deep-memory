@@ -1,0 +1,20 @@
+# 依赖
+node_modules/
+
+# 本地记忆库导出：含真实私人记忆，永不入库
+viz-kit/data.json
+viz-kit/data.sample.json
+
+# 运行产物
+*.log
+diag.log
+backup/
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/
+.idea/

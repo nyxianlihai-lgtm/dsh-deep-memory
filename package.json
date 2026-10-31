@@ -1,0 +1,61 @@
+{
+  "name": "dsh-deep-memory",
+  "version": "0.1.0",
+  "description": "给 DSH 会话一份分层的长期记忆：用户画像常驻、项目事实按话题召回、决策与踩过的坑会淡忘但不丢。",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nyxianlihai-lgtm/dsh-deep-memory.git"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "scripts",
+    "viz-kit/brain.html",
+    "viz-kit/README.md",
+    "viz-kit/serve.mjs",
+    "viz-kit/start.cmd",
+    "cordis.patch.yml",
+    "README.md",
+    "REQUIREMENTS.md",
+    "HANDOFF.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "cordis",
+    "memory",
+    "long-term-memory",
+    "agent"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": "*",
+    "@deepseek-ai/dsh-llm": "*"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-llm": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\""
+  }
+}

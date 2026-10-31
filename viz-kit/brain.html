@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#05070f">
+<title>Memory Galaxy · 记忆星河</title>
+<style>
+:root{color-scheme:dark;--bg:#05070f;--ink:#e1e9f7;--muted:#8792aa;--line:#ffffff12;--accent:#a6dce4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.6 "Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;height:100dvh;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,canvas:focus-visible{outline:2px solid var(--accent);outline-offset:4px}button{border:1px solid var(--line);background:#0d1422;border-radius:6px}button:hover{border-color:#8ba2c34d;background:#141f30}button:disabled{opacity:.35;cursor:default}
+header{height:146px;padding:25px 36px 17px;border-bottom:1px solid var(--line);position:relative;z-index:2;background:#05070f}.heading{display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{display:flex;align-items:center;gap:16px}.mark{width:35px;height:35px;border:1px solid #86c9d044;border-radius:50%;display:grid;place-items:center;color:#a6dce4;font-size:23px;box-shadow:0 0 25px #67bfd011}.eyebrow{font-size:9px;color:#8499ac;letter-spacing:.26em}h1{font-size:23px;letter-spacing:.18em;font-weight:500;margin:0}.subtitle{color:var(--muted);font-size:12px;letter-spacing:.05em}.connection{font-size:11px;color:var(--muted);text-align:right}.connection i{display:inline-block;width:5px;height:5px;background:#92c9b8;border-radius:50%;margin-right:8px}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.chip{display:flex;align-items:center;gap:7px;padding:5px 11px;background:transparent;border-radius:4px;font-size:11px;transition:opacity .2s}.chip.off{opacity:.35}.dot{height:6px;width:6px;border-radius:50%;background:var(--color);box-shadow:0 0 8px var(--color)}.chip .n{color:var(--muted);font:10px Consolas,monospace;margin-left:5px}
+main{display:grid;grid-template-columns:minmax(0,1fr) 300px;height:calc(100dvh - 146px - 38px)}.universe{position:relative;min-width:0;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 48% 47%,#10182a80,transparent 68%)}canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}.stage-label{position:absolute;top:24px;left:30px;pointer-events:none}.stage-label b{font-size:10px;letter-spacing:.2em;color:#91a7bd;font-weight:400}.stage-label p{font-size:10px;color:#60718a;margin:4px 0}.stage-index{position:absolute;right:25px;top:25px;font:10px Consolas,monospace;color:#6d7e99;letter-spacing:.12em;pointer-events:none}.toolbar{position:absolute;bottom:23px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:5px;background:#0a0f1ce6;border:1px solid var(--line);border-radius:8px;white-space:nowrap}.toolbar button{border-color:transparent;background:transparent;min-width:30px;height:29px;font-size:16px}.toolbar .reset{font-size:11px;padding:0 11px;border-left:1px solid var(--line);border-radius:0}.zoom{min-width:45px;text-align:center;font:10px Consolas,monospace;color:var(--muted)}.message{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);text-align:center;background:#080e1ce8;padding:22px 30px;border:1px solid var(--line);border-radius:8px;max-width:90%;width:340px}.message p{color:var(--muted);margin:5px 0 14px}.message[hidden]{display:none}.tooltip{position:absolute;pointer-events:none;background:#0d1526f5;border:1px solid #809dbe40;padding:10px 13px;border-radius:6px;max-width:min(260px,80%);font-size:12px;box-shadow:0 8px 30px #0005;z-index:3}.tooltip small{display:block;color:var(--muted);margin-top:3px}.tooltip[hidden]{display:none}
+aside{border-left:1px solid var(--line);padding:26px 25px;overflow:auto;background:linear-gradient(135deg,#0b101a88,#05070f)}.aside-top{display:flex;align-items:center;justify-content:space-between;color:#8091a8;font-size:10px;letter-spacing:.15em}.read-only{color:#6b8793;font-size:9px;letter-spacing:.08em}.overview{margin-top:30px}.total{font:46px/1.15 Georgia,serif;color:#d4e1f1;letter-spacing:-.04em}.total small{font:11px "Microsoft YaHei",sans-serif;letter-spacing:0;color:var(--muted);margin-left:9px}.overview p{font-size:11px;color:var(--muted);margin:10px 0 24px}.rule{height:1px;background:var(--line);margin:23px 0}.intro-orbit{width:85px;height:85px;border:1px solid #7896ba26;border-radius:50%;margin:35px auto 22px;position:relative;display:grid;place-items:center}.intro-orbit:before{content:"";position:absolute;inset:11px;border:1px dashed #7896ba26;border-radius:50%;transform:rotate(-30deg)}.intro-orbit:after{content:"";width:5px;height:5px;border-radius:50%;background:#b1d8ee;box-shadow:0 0 18px #86b9e8}.intro-title{text-align:center;font-size:14px;letter-spacing:.12em;font-weight:400}.intro-copy{text-align:center;color:var(--muted);font-size:11px;line-height:2}.encoding{margin-top:35px;display:grid;gap:15px;color:#708198;font-size:10px}.encoding div{display:flex;align-items:center;gap:10px}.size-key{display:flex;align-items:center;gap:5px;width:40px}.size-key i{border-radius:50%;background:#b4c8de;display:block}.size-key i:nth-child(1){width:3px;height:3px}.size-key i:nth-child(2){width:5px;height:5px}.size-key i:nth-child(3){width:7px;height:7px}.brightness-key{width:40px;height:4px;background:linear-gradient(90deg,#3b4a63,#d5e5f7);border-radius:2px}.selected-kind{display:flex;gap:8px;align-items:center;font-size:11px;margin-top:26px}.memory-text{font-size:17px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere;margin:17px 0 22px;font-weight:400}.when{font-size:11px;color:#9cabc1}.metadata{margin-top:25px}.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;font-size:11px}.row dt{color:var(--muted);flex-shrink:0}.row dd{margin:0;text-align:right;overflow-wrap:anywhere}.meter{height:3px;background:#172032;margin-top:7px}.meter span{display:block;height:100%;background:var(--accent);width:0}.source-id{font:9px/1.8 Consolas,monospace;color:#596b83;overflow-wrap:anywhere;margin-top:25px}.browse{display:flex;gap:8px;margin-top:24px}.browse button{padding:6px 10px;font-size:11px}.browse .clear{margin-left:auto}.detail[hidden],.intro[hidden]{display:none}
+footer{height:38px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 30px;color:#65758e;font-size:10px;gap:20px}footer .live{color:#879aae}#density{color:#71869f}
+@media(min-width:1600px){main{grid-template-columns:minmax(0,1fr) 340px}aside{padding:32px}}
+@media(max-width:800px){header{height:155px;padding:18px 20px 12px}h1{font-size:20px}.subtitle{display:none}.legend{gap:6px;margin-top:17px}.chip{padding:5px 8px}.connection{font-size:10px}main{height:calc(100dvh - 155px - 38px);grid-template-columns:minmax(0,1fr) 245px}aside{padding:23px 18px}.stage-label{left:18px}.stage-index{display:none}footer{padding:0 18px}footer .desktop-hint{display:none}}
+@media(max-width:580px){header{height:166px;padding:16px}.mark{width:29px;height:29px;font-size:20px}.brand{gap:10px}.eyebrow{font-size:8px}h1{font-size:19px}.legend{gap:5px;margin-top:16px}.chip{font-size:10px;padding:4px 7px}.chip .n{margin-left:0}.connection{max-width:110px}main{height:calc(100dvh - 166px - 38px);display:block}.universe{height:100%}aside{position:absolute;bottom:57px;right:14px;width:265px;max-height:58dvh;border:1px solid #50617e40;border-radius:10px;background:#080e1bf5;z-index:4;padding:19px;box-shadow:0 15px 40px #0007}aside:not(.has-selection){display:none}.overview{display:none}.aside-top{font-size:9px}.selected-kind{margin-top:18px}.memory-text{font-size:15px;margin:13px 0}.metadata{margin-top:15px}.row{margin-top:10px}.source-id{margin-top:15px}.browse{margin-top:15px}.stage-label{top:18px}.toolbar{bottom:19px}footer{font-size:9px;padding:0 16px}.footer-mode{display:none}}
+/* V2: preserve the interaction shell, reduce it to an unobtrusive overlay. */
+header{position:fixed;top:0;left:0;width:100%;height:auto;padding:34px 42px 0;border:0;background:none;pointer-events:none}.heading{align-items:flex-start}.brand{gap:0}.mark,.subtitle,.stage-index{display:none}h1{font:400 28px/1.5 Georgia,"Times New Roman",serif;letter-spacing:.025em;color:#d5dde7}.eyebrow{letter-spacing:.16em;font-size:10px;color:#738294;margin-bottom:3px}.connection{font-size:10px;color:#6c7b8f;padding-top:6px;letter-spacing:.02em}.connection i{background:#8aaba3;box-shadow:none;width:4px;height:4px}.header-count{margin-top:7px;color:#a2adbd;font-size:11px}.header-count .separator{padding:0 9px;color:#475466}.legend{pointer-events:auto;margin-top:17px;gap:13px}.chip{border:0;background:none;padding:3px 0;border-radius:0;color:#8998aa;font-size:10px;gap:6px}.chip:hover{background:none;color:#dbe4ee}.chip .n{font-size:9px;color:#536175;margin-left:0}.dot{height:4px;width:4px;box-shadow:none}.chip.off{opacity:.23}
+main{display:block;position:fixed;inset:0;height:100dvh}.universe{width:100%;height:100%;background:radial-gradient(ellipse at 50% 52%,#0b111b44,transparent 68%)}.stage-label{top:auto;bottom:105px;left:42px;opacity:.65}.stage-label b{display:none}.stage-label p{font-size:10px;letter-spacing:.06em;color:#7d8a9b}.toolbar{bottom:41px;background:#070c1590;border-color:#ffffff09;border-radius:5px;padding:3px;gap:1px}.toolbar button{height:27px;min-width:29px;font-size:14px;color:#90a0b2}.toolbar .reset{font-size:10px;padding:0 11px}.toolbar button[hidden]{display:none}.zoom{font-size:9px;min-width:38px}.tooltip{background:#0a101be8;border-color:#67788c26;font-size:11px;padding:9px 12px;box-shadow:none;color:#bdcad8}.tooltip small{font-size:9px;color:#728296}
+aside,aside:not(.has-selection){display:none}aside.has-selection{display:block;position:fixed;right:35px;top:auto;bottom:100px;width:295px;max-height:calc(100dvh - 240px);border:1px solid #71849d20;border-radius:8px;background:#080e17ee;padding:23px;z-index:4;box-shadow:0 18px 60px #0003}.overview,.intro{display:none}.aside-top{font-size:9px;color:#66768a}.read-only{font-size:8px}.selected-kind{font-size:10px;margin-top:21px;color:#a6b4c6}.memory-text{font-size:16px;line-height:1.9;font-weight:400;margin:15px 0}.when{font-size:10px}.metadata{margin-top:21px}.row{font-size:10px;margin-top:11px;color:#adbacb}.row dt{color:#6c7c90}.meter{height:2px;background:#19202d}.meter span{opacity:.65}.source-id{font-size:8px;color:#455469;margin-top:15px}.browse{margin-top:18px}.browse button{font-size:10px;background:none;border-color:#60728d24;padding:5px 9px}.memory-path{font-size:9px;color:#76869b;margin:21px 0 4px;line-height:1.8}.related-note{font-size:9px;color:#53657b;margin:5px 0}.focus-button{background:none;border:0;padding:0;margin:15px 0 0;font-size:10px;color:#a8bacc;text-decoration:underline;text-underline-offset:4px}.cluster-eyebrow{font-size:8px;color:#63758b;letter-spacing:.2em;margin:24px 0 8px}#c-title{font-size:20px;font-weight:400;line-height:1.5;margin:0 0 12px}#c-count{font-size:11px;color:#b6c4d4}#c-copy{font-size:10px;color:#6f8198;line-height:1.9}#c-list{display:grid;gap:3px;margin-top:19px}#c-list button{background:none;border:0;border-bottom:1px solid #ffffff07;text-align:left;padding:8px 0;border-radius:0;font-size:10px;color:#9baabd;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+footer{position:fixed;bottom:0;width:100%;height:26px;border:0;padding:0 42px 10px;pointer-events:none;font-size:8px;color:#48576d}footer .live{color:#6d7e94}#density{color:#57697f}.message{background:#080e17df;border-color:#687f9c18;font-size:12px}.message p{font-size:11px}
+@media(max-width:800px){header{padding:24px 25px 0}h1{font-size:25px}.heading{gap:8px}.legend{gap:12px}.stage-label{left:25px}.connection{font-size:9px}footer{padding:0 25px 10px}.desktop-hint{display:none}aside.has-selection{right:25px;width:275px}}
+@media(max-width:580px){header{padding:23px 22px 0}.heading{gap:10px}h1{font-size:23px}.eyebrow{font-size:8px;letter-spacing:.1em}.connection{font-size:8px;max-width:145px;padding-top:4px}.header-count{font-size:9px}.header-count .separator{padding:0 4px}.legend{gap:10px;margin-top:18px;max-width:300px}.chip{font-size:9px;gap:4px}.chip .n{font-size:8px}.stage-label{left:22px;bottom:100px}.toolbar{bottom:38px}aside.has-selection{right:18px;bottom:86px;max-height:65dvh;width:275px;padding:20px}footer{padding:0 22px 10px}.footer-mode{display:none}.memory-text{font-size:15px}}
+#related-list{display:grid;gap:4px;margin-top:8px}.related-memory{background:#12203355;border:1px solid #a0bfdf18;text-align:left;font-size:10px;line-height:1.7;padding:7px 9px;color:#b6cde5;white-space:normal;overflow-wrap:anywhere}.related-memory:hover{background:#1d304966;border-color:#a0bfdf50}body.simulation .toolbar{max-width:calc(100vw - 28px);flex-wrap:wrap;justify-content:center}body.simulation .connection{color:#b9b29a}</style>
+</head>
+<body>
+<header>
+  <div class="heading"><div class="brand"><div class="mark" aria-hidden="true">✧</div><div><div class="eyebrow" id="eyebrow">我的长期记忆</div><h1>Memory Galaxy</h1></div><span class="subtitle">每一次记得，都有微光。</span></div><div class="connection"><i></i><span id="connection">正在连接记忆</span><div class="header-count"><span id="header-total">—</span> 条记忆 <span class="separator">/</span> <span id="level">阶段星河</span></div></div></div>
+  <nav class="legend" id="legend" aria-label="按记忆类型筛选"></nav>
+</header>
+<main>
+  <section class="universe" id="universe" aria-label="三维记忆星河">
+    <canvas id="sky" tabindex="0" aria-label="记忆星图。拖动旋转，滚轮缩放，点击选择。左右方向键逐条浏览，Escape 关闭详情，0 复位。"></canvas>
+    <div class="stage-label"><b>长期记忆 / LONG-TERM MEMORY</b><p id="stage-sub">散落的片刻，连成一个你。</p></div>
+    <div class="stage-index">FIG. 01 / NEURAL GALAXY</div>
+    <div id="tooltip" class="tooltip" hidden><span id="tip-text"></span><small id="tip-meta"></small></div>
+    <div class="message" id="message" role="status"><span id="message-title">正在寻找记忆的微光…</span><p id="message-copy">连接本地记忆库</p><button id="retry" hidden>重新连接</button></div>
+    <div class="toolbar" aria-label="星图控制"><button id="zoom-out" aria-label="缩小">−</button><span id="zoom-label" class="zoom">100%</span><button id="zoom-in" aria-label="放大">+</button><button id="back" class="reset" hidden>退出聚焦</button><button id="toggle-animation" class="reset" aria-pressed="true">暂停动态</button><button id="reset" class="reset">回到全景</button></div>
+  </section>
+  <aside id="sidebar">
+    <div class="aside-top"><span>记忆观测站</span><span class="read-only">◦ 只读视图</span></div>
+    <div class="overview"><div class="total"><span id="total">—</span><small>颗记忆星</small></div><p id="summary">每一颗星，都是被认真记住的事。</p></div>
+    <div class="intro" id="intro"><div class="rule"></div><div class="intro-orbit" aria-hidden="true"></div><h2 class="intro-title">拾起一颗记忆</h2><p class="intro-copy">悬停，感受一段微光。<br>点击星星，读它背后的故事。</p><div class="encoding"><div><span class="size-key"><i></i><i></i><i></i></span>星的大小 · 记忆的重要度</div><div><span class="brightness-key"></span>星的明暗 · 记忆的鲜活度</div></div><div class="browse"><button id="first">浏览第一颗星 →</button></div></div>
+    <section class="detail" id="detail" aria-label="记忆详情" hidden><div class="selected-kind"><span class="dot" id="detail-dot"></span><span id="d-kind"></span></div><h2 id="d-text" class="memory-text"></h2><div class="when" id="d-when"></div><dl class="metadata"><div class="row"><dt>范围</dt><dd id="d-scope"></dd></div><div class="row"><dt>重要度</dt><dd id="d-imp"></dd></div><div class="meter"><span id="imp-meter"></span></div><div class="row"><dt>鲜活度</dt><dd id="d-act"></dd></div><div class="meter"><span id="act-meter"></span></div><div class="row"><dt>状态</dt><dd id="d-status"></dd></div><div class="row"><dt>来源</dt><dd id="d-source"></dd></div></dl><p class="memory-path" id="d-path"></p><p class="related-note" id="d-related"></p><div id="related-list" aria-label="关联记忆"></div><div class="source-id" id="d-id"></div><button id="focus-memory" class="focus-button">靠近这颗记忆</button><div class="browse"><button id="previous" aria-label="上一条记忆">←</button><button id="next" aria-label="下一条记忆">→</button><button class="clear" id="close">收起 ×</button></div></section>
+    <section id="cluster-detail" hidden><p class="cluster-eyebrow">MEMORY CLUSTER</p><h2 id="c-title"></h2><p id="c-count"></p><p id="c-copy"></p><div id="c-list"></div><div class="browse"><button id="enter-cluster">进入星团</button><button id="close-cluster" class="clear">收起 ×</button></div></section>
+  </aside>
+</main>
+<footer><span><span class="live" id="visible-count">0 / 0</span> 颗星可见 <span id="density"></span></span><span class="desktop-hint">拖动观察 · 滚轮进入层级 · 点击唤起记忆</span><span class="footer-mode" id="mode">MEMORY MAP</span></footer>
+<script>
+'use strict';
+// Keep the API contract and central type registry. Only desaturate the existing palette.
+const TYPES = {
+  fact:    { label:'人物事实', color:'#8fc7ff' },
+  event:   { label:'共同经历', color:'#ffe0a3' },
+  pending: { label:'未完待续', color:'#c5bcf0' },
+  profile: { label:'相处档案', color:'#8ae0e8', core:true },
+  sticky:  { label:'必须记得', color:'#b0e7c2' },
+  diary:   { label:'日记片段', color:'#f1f6ff' },
+};
+// One complete inhale/exhale per period. Keep these controls together for tuning.
+const BREATH={periodMin:2.8,periodMax:4.2,amplitudeMin:.40,amplitudeMax:.58};
+// Importance sets distance; the outer field follows a three-dimensional spiral disk.
+const SPATIAL={identityMin:.08,identityMax:.21,coreThreshold:.95,coreMin:.30,coreMax:.43,innerThreshold:.85,innerMin:.52,innerMax:.73,shellMin:.42,shellSpread:2.6};
+const GALAXY={arms:4,winding:2.85,rootRadius:.22,armScatter:.105,diskThickness:.033,haloFraction:.045,homeYaw:.24,homePitch:-.38,screenTilt:-.50,homeDistance:8.8};
+const NEURAL={zoomStart:1.45,zoomFull:2.4,maxEdges:56,maxDegree:3,scanBudget:1500,maxWorldLength:2.4,cellSize:.8};
+const $ = id => document.getElementById(id);
+const canvas=$('sky'),ctx=canvas.getContext('2d'),TAU=Math.PI*2;
+const fogCanvas=document.createElement('canvas'),fogCtx=fogCanvas.getContext('2d');
+const grainCanvas=document.createElement('canvas'),grainCtx=grainCanvas.getContext('2d');
+let fogRatio=.4,lastFogTime=-Infinity,lastFogPose=null;
+let grainRatio=1,lastGrainTime=-Infinity,lastGrainPose=null,stellarDust=[];
+const URL_PARAMS=new URLSearchParams(location.search);
+document.addEventListener('DOMContentLoaded',()=>{const t=URL_PARAMS.get('title');if(t)document.getElementById('eyebrow').textContent=t;});
+const DATA_URL=URL_PARAMS.get('data')||'./data.json';
+const DEMO_COUNT=['1200','3000'].includes(URL_PARAMS.get('demo'))?Number(URL_PARAMS.get('demo')):0;
+const SIMULATION=DEMO_COUNT>0;
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+const hidden=new Set(),sprites=new Map();
+const STATUS={current:'当前有效',superseded:'已更新',archived:'已归档',open:'进行中',done:'已完成',closed:'已结束',cancelled:'已取消'};
+const SOURCE={chat:'聊天',manual:'手动记录',diary:'日记',profile:'相处档案',simulation:'模拟数据'};
+const typeOf=kind=>Object.hasOwn(TYPES,kind)?TYPES[kind]:{label:kind||'其他记忆',color:'#b9c9d8'};
+const unit=value=>Number.isFinite(Number(value))?Math.max(0,Math.min(1,Number(value))):0;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const mix=(a,b,t)=>a+(b-a)*t;
+const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+function hash(str){let h=2166136261;for(const c of String(str)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
+function rng(seed){let s=seed>>>0;return()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};}
+function normal(r){return Math.sqrt(-2*Math.log(Math.max(.000001,r())))*Math.cos(TAU*r());}
+const v3=(x=0,y=0,z=0)=>({x,y,z});
+let stars=[],visible=[],selected=null,hovered=null,galaxy=null,anchorStars=[],identityStars=[];
+let nodeIndex=new Map(),memoryIndex=new Map(),relations=new Map();
+let width=1,height=1,dpr=1,base=1,frameId=0,lastTime=0,loading=false,sceneTime=0,frameDelta=1/60;
+let animationTime=0,animationPaused=false,lastRenderedAt=0;
+let pointer=null,gesture=null,projected=[],pickGrid=new Map(),lodStats={},flow=[],atmosphere=[],skyDust=[],dustLanes=[];
+let focusedNode=null,focusHistory=[],pulses=new Map(),activeLinks=[],selectedCluster=null;
+let retiringLinks=[],chainStats={drawn:0,promoted:0};
+let neuralBuckets=new Map(),neuralEdges=[],neuralCachePose=null,neuralCacheAt=-Infinity,neuralStats={drawn:0,reveal:0,candidates:0};
+let photoStats={fieldStars:0,skyDust:0,dustCuts:0};
+const camera={yaw:GALAXY.homeYaw,pitch:GALAXY.homePitch,distance:GALAXY.homeDistance,look:v3()};
+const target={yaw:GALAXY.homeYaw,pitch:GALAXY.homePitch,distance:GALAXY.homeDistance,look:v3()};
+const HOME_DISTANCE=GALAXY.homeDistance,MIN_DISTANCE=.12,MAX_DISTANCE=20;
+// 星少的时候星群半径很小（两条记忆大概只有 0.7），固定用 8.8 的相机距离等于什么都看不见。
+// 按实际半径收近，上限永远不超过 HOME_DISTANCE，所以数据多的时候行为和以前完全一样。
+let homeDistance=HOME_DISTANCE;
+let velocity={yaw:0,pitch:0},lastInput=0,view={};
+
+// Adapter: no fixture data and no API field renaming. Optional authored hierarchy wins.
+// The current API has no semantic embeddings; keyword topics and links are explicitly inferred.
+const THEMES=[
+  ['健康与照顾',/过敏|腰|疼|健康|生病|医院|药|照顾/],
+  ['日常与味道',/吃|烧烤|草莓|面包|牛奶|饿|辣|食|做饭/],
+  ['创作与研究',/实验|研究|电泳|画|创作|设计|零件|笔/],
+  ['约定与未来',/答应|约定|面试|通知|截止|等.*结果|周末|电影|睡前/],
+  ['一起经历',/一起|星星|雪人|树枝|讨论|聊/],
+];
+function topicFor(s){if(s.topicId||s.topic)return {key:String(s.topicId||s.topic),label:String(s.topic||s.topicId),inferred:false};
+  const theme=THEMES.find(([,pattern])=>pattern.test(s.text||''));return {key:theme?.[0]||s.kind||'其他',label:theme?.[0]||typeOf(s.kind).label,inferred:true};}
+function adaptMemory(raw){
+  const id=String(raw.id),r=rng(hash(id)),topic=topicFor(raw);
+  // Date is used only for grouping. activation remains the server's unmodified value.
+  const date=typeof raw.when==='string'?raw.when.match(/^(\d{4})-(\d{2})-(\d{2})/):null;
+  const stageKey=String(raw.stageId||(date?date[1]+'-'+date[2]:'undated'));
+  const stageLabel=String(raw.stageLabel||(date?date[1]+' 年 '+Number(date[2])+' 月':'跨越时间'));
+  const groupKey=String(raw.clusterId||(raw.scope||'global')+'/'+(date?'week-'+Math.ceil(Number(date[3])/7):'ongoing'));
+  return {...raw,id,importance:unit(raw.importance),activation:unit(raw.activation),topic,stageKey,stageLabel,groupKey,
+    identityCore:raw.isCore===true||typeOf(raw.kind).core===true||raw.source==='persona',
+    phase:r()*TAU,speed:TAU/mix(BREATH.periodMin,BREATH.periodMax,r()),amplitude:mix(BREATH.amplitudeMin,BREATH.amplitudeMax,r()),baseBrightness:.12+.88*Math.pow(unit(raw.activation),1.15),
+    relatedMemoryIds:Array.isArray(raw.relatedMemoryIds)?raw.relatedMemoryIds.map(String):[],nodeType:'memory',count:1};
+}
+function positionFor(s){
+  const r=rng(hash('radial:'+s.id)),group=rng(hash('direction:'+s.stageKey+'/'+s.topic.key+'/'+s.groupKey));
+  let x=normal(r),y=normal(r),z=normal(r),radius,spatialLayer;
+  if(s.identityCore){radius=mix(SPATIAL.identityMin,SPATIAL.identityMax,r());spatialLayer='identity';}
+  else if(s.importance>=SPATIAL.coreThreshold){radius=mix(SPATIAL.coreMin,SPATIAL.coreMax,r());spatialLayer='core';}
+  else if(s.kind==='sticky'||s.importance>=SPATIAL.innerThreshold){radius=mix(SPATIAL.innerMin,SPATIAL.innerMax,1-s.importance)+r()*.025;spatialLayer='inner';}
+  else{radius=SPATIAL.shellMin+Math.pow(1-s.importance,1.1)*SPATIAL.shellSpread+r()*.32;spatialLayer='outer';}
+  const length=Math.hypot(x,y,z)||1;
+  if(spatialLayer==='identity'||spatialLayer==='core')return {x:x/length*radius,y:y/length*radius,z:z/length*radius,orbitRadius:radius,spatialLayer,galacticComponent:'bulge',armIndex:null};
+  if(spatialLayer==='inner')return {x:Math.tanh(normal(r)*.55)*radius,y:normal(r)*.045,z:normal(r)*radius*.16,orbitRadius:radius,spatialLayer,galacticComponent:'bar',armIndex:null};
+  // Shared group chooses a spiral arm; an ID chooses its local scatter. No outline,
+  // fixed dots, texture backdrop, or extra memory records are used to draw the arms.
+  const sector=hash(s.topic.key+'/'+s.groupKey)%10,armIndex=sector<4?0:sector<8?2:sector===8?1:3;
+  const angle=armIndex*TAU/GALAXY.arms+GALAXY.winding*Math.log1p(radius/GALAXY.rootRadius)+normal(r)*GALAXY.armScatter+(group()-.5)*.07;
+  if(r()<GALAXY.haloFraction){const haloRadius=radius*(1.04+r()*.16);return {x:x/length*haloRadius,y:y/length*haloRadius*.50,z:z/length*haloRadius,orbitRadius:haloRadius,spatialLayer,galacticComponent:'halo',armIndex:null};}
+  const radial=radius+normal(r)*.035;
+  return {x:Math.cos(angle)*radial,y:normal(r)*GALAXY.diskThickness*(1+radius*.35),z:Math.sin(angle)*radial,orbitRadius:radius,spatialLayer,galacticComponent:'arm',armIndex};
+}
+function cluster(id,nodeType,label,parent){const n={id,nodeType,label,parent,children:[],members:[],count:0,center:v3(),radius:.1,samples:[],activation:0,importance:0};nodeIndex.set(id,n);return n;}
+function addChild(parent,key,nodeType,label){const id=parent.id+'/'+key;let n=nodeIndex.get(id);if(!n){n=cluster(id,nodeType,label,parent);parent.children.push(n);}return n;}
+function splitGroup(node,depth=0){
+  if(node.members.length<=24||depth>=10){node.children=node.members;for(const s of node.members)s.parent=node;return;}
+  // Spatial octants inside a semantic group: nearby memories stay together at coarse LOD.
+  // Hash buckets would give every subgroup the same broad bounds and defeat near-view culling.
+  let x0=Infinity,x1=-Infinity,y0=Infinity,y1=-Infinity,z0=Infinity,z1=-Infinity;
+  for(const s of node.members){x0=Math.min(x0,s.x);x1=Math.max(x1,s.x);y0=Math.min(y0,s.y);y1=Math.max(y1,s.y);z0=Math.min(z0,s.z);z1=Math.max(z1,s.z);}
+  const mx=(x0+x1)/2,my=(y0+y1)/2,mz=(z0+z1)/2;
+  const buckets=new Map();for(const s of node.members){const bucket=(s.x>mx?1:0)|(s.y>my?2:0)|(s.z>mz?4:0);if(!buckets.has(bucket))buckets.set(bucket,[]);buckets.get(bucket).push(s);}
+  for(const [key,members] of buckets){const child=cluster(node.id+'/part-'+key,'group','记忆组 '+(key+1),node);child.members=members;node.children.push(child);splitGroup(child,depth+1);}
+}
+function finishNode(node){
+  if(node.nodeType==='memory')return;
+  for(const c of node.children)if(c.nodeType!=='memory')finishNode(c);
+  node.count=node.members.length;let x=0,y=0,z=0,a=0,importance=0;
+  for(const s of node.members){x+=s.x;y+=s.y;z+=s.z;a+=s.activation;importance+=s.importance;}
+  node.center=v3(x/node.count||0,y/node.count||0,z/node.count||0);node.x=node.center.x;node.y=node.center.y;node.z=node.center.z;
+  node.activation=a/(node.count||1);node.importance=importance/(node.count||1);node.radius=.045;
+  for(const s of node.members)node.radius=Math.max(node.radius,Math.hypot(s.x-node.x,s.y-node.y,s.z-node.z)+.025);
+  // Deterministic bottom-k sample: cluster texture represents actual members, never invented stars.
+  node.samples=node.members.slice().sort((a,b)=>hash(a.id)-hash(b.id)).slice(0,80);
+  node.phase=hash(node.id)/4294967296*TAU;
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,minZ=Infinity,maxZ=-Infinity;
+  for(const s of node.members){minX=Math.min(minX,s.x);maxX=Math.max(maxX,s.x);minY=Math.min(minY,s.y);maxY=Math.max(maxY,s.y);minZ=Math.min(minZ,s.z);maxZ=Math.max(maxZ,s.z);}
+  node.framingCenter=node.count?v3((minX+maxX)/2,(minY+maxY)/2,(minZ+maxZ)/2):v3();
+}
+function buildHierarchy(memories){
+  nodeIndex=new Map();memoryIndex=new Map(memories.map(s=>[s.id,s]));const root=cluster('galaxy','galaxy','完整记忆星河',null);
+  for(const s of memories){const p=positionFor(s);Object.assign(s,p);const stage=addChild(root,'stage:'+s.stageKey,'stage',s.stageLabel);
+    const topic=addChild(stage,'topic:'+s.topic.key,'topic',s.topic.label);
+    const group=addChild(topic,'group:'+s.groupKey,'group',scopeLabel(s.scope)+' · '+(s.whenLabel||'长期记忆'));
+    root.members.push(s);stage.members.push(s);topic.members.push(s);group.members.push(s);
+  }
+  for(const stage of root.children)for(const topic of stage.children)for(const group of topic.children)splitGroup(group);
+  finishNode(root);root.framingCenter=v3();return root;
+}
+function terms(text){const clean=String(text||'').replace(/[\p{P}\p{Z}\d]/gu,'');const words=new Set();for(let i=0;i<clean.length-1;i++)words.add(clean.slice(i,i+2));return words;}
+function similarity(a,b){if(a.scope!==b.scope&&a.scope!=='global'&&b.scope!=='global')return 0;
+  let intersection=0;for(const t of a.tokens)if(b.tokens.has(t))intersection++;
+  const lexical=intersection/Math.max(3,Math.min(a.tokens.size,b.tokens.size));return lexical+(a.topic.key===b.topic.key?.08:0);}
+function buildRelations(){
+  relations=new Map();const allMemories=new Map(stars.map(s=>[s.id,s])),inverted=new Map();for(const s of stars){s.tokens=terms(s.text);for(const token of s.tokens){if(!inverted.has(token))inverted.set(token,[]);inverted.get(token).push(s);}}
+  const recorded=new Map();for(const s of stars)for(const id of s.relatedMemoryIds){const b=allMemories.get(id);if(!b||b===s)continue;
+    if(!recorded.has(s.id))recorded.set(s.id,new Set());if(!recorded.has(b.id))recorded.set(b.id,new Set());recorded.get(s.id).add(b.id);recorded.get(b.id).add(s.id);}
+  for(const s of stars){const pool=new Map();
+    // Associations can be traversed from either end; no causal direction is implied.
+    for(const id of recorded.get(s.id)||[]){const b=allMemories.get(id);pool.set(id,{star:b,strength:1,explicit:true});}
+    const candidateSet=new Set();for(const t of s.tokens){const bucket=inverted.get(t);if(bucket.length>160)continue;for(const b of bucket){if(b!==s)candidateSet.add(b);if(candidateSet.size>=160)break;}if(candidateSet.size>=160)break;}
+    for(const b of candidateSet){if(pool.has(b.id))continue;const strength=similarity(s,b);if(strength>=.26)pool.set(b.id,{star:b,strength,explicit:false});}
+    relations.set(s.id,[...pool.values()].sort((a,b)=>Number(b.explicit)-Number(a.explicit)||(s.kind==='event'?Number(b.star.kind==='event')-Number(a.star.kind==='event'):0)||b.strength-a.strength).slice(0,3));
+  }
+  rebuildNeuralGraph();
+}
+function edgeKey(a,b){return JSON.stringify(a<b?[a,b]:[b,a]);}
+function rebuildNeuralGraph(){
+  neuralBuckets=new Map();neuralEdges=[];neuralCachePose=null;neuralCacheAt=-Infinity;const unique=new Map();
+  // Reuse actual recorded/inferred associations, never all-pairs proximity wiring.
+  for(const [fromId,links] of relations){const a=memoryIndex.get(fromId);if(!a)continue;
+    for(const link of links){const b=memoryIndex.get(link.star.id);if(!b||a===b)continue;const distance=Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);if(!Number.isFinite(distance)||distance>NEURAL.maxWorldLength)continue;
+      const key=edgeKey(a.id,b.id),old=unique.get(key);if(!old||link.strength>old.strength)unique.set(key,{key,a,b,strength:link.strength,explicit:link.explicit});}}
+  for(const edge of unique.values()){const mid=v3((edge.a.x+edge.b.x)/2,(edge.a.y+edge.b.y)/2,(edge.a.z+edge.b.z)/2),size=NEURAL.cellSize;
+    const key=[Math.floor(mid.x/size),Math.floor(mid.y/size),Math.floor(mid.z/size)].join(',');if(!neuralBuckets.has(key))neuralBuckets.set(key,{center:mid,edges:[]});neuralBuckets.get(key).edges.push(edge);}
+  for(const bucket of neuralBuckets.values())bucket.edges.sort((a,b)=>Number(b.explicit)-Number(a.explicit)||b.strength-a.strength||a.key.localeCompare(b.key));
+}
+function prepareNeuralPaths(t){
+  const reveal=smooth(NEURAL.zoomStart,NEURAL.zoomFull,HOME_DISTANCE/camera.distance);neuralStats={drawn:0,reveal,candidates:0};
+  if(reveal<.003){neuralEdges=[];neuralCachePose=null;return;}
+  const pose=[camera.yaw,camera.pitch,camera.distance,camera.look.x,camera.look.y,camera.look.z],changed=!neuralCachePose||pose.some((v,i)=>Math.abs(v-neuralCachePose[i])>.003);
+  if(changed||t-neuralCacheAt>110){
+    const maxLength=Math.min(460,Math.min(width,height)*.65),viewRadius=camera.distance*Math.hypot(width,height)/(2*view.focal)+NEURAL.maxWorldLength/2;
+    const buckets=[...neuralBuckets.values()].filter(b=>Math.hypot(b.center.x-camera.look.x,b.center.y-camera.look.y,b.center.z-camera.look.z)<viewRadius);
+    const degrees=new Map();neuralEdges=[];let scanned=0,index=0,more=true;
+    // Round robin across spatial buckets keeps one dense theme from consuming the budget.
+    while(more&&scanned<NEURAL.scanBudget&&neuralEdges.length<NEURAL.maxEdges){more=false;
+      for(const bucket of buckets){const edge=bucket.edges[index];if(!edge)continue;more=true;if(++scanned>NEURAL.scanBudget||neuralEdges.length>=NEURAL.maxEdges)break;
+        if((degrees.get(edge.a.id)||0)>=NEURAL.maxDegree||(degrees.get(edge.b.id)||0)>=NEURAL.maxDegree)continue;
+        const a=project(edge.a),b=project(edge.b);if(!a.visible||!b.visible||a.x<8||a.y<8||a.x>width-8||a.y>height-8||b.x<8||b.y<8||b.x>width-8||b.y>height-8)continue;
+        const length=Math.hypot(a.x-b.x,a.y-b.y);if(length<10||length>maxLength)continue;
+        neuralEdges.push(edge);degrees.set(edge.a.id,(degrees.get(edge.a.id)||0)+1);degrees.set(edge.b.id,(degrees.get(edge.b.id)||0)+1);
+      }index++;
+    }
+    neuralCachePose=pose;neuralCacheAt=t;neuralStats.candidates=scanned;
+  }
+  // Only the bounded, local endpoints are exposed through distant LOD, very dimly.
+  const existing=new Map(renderEntries.filter(e=>!e.cluster).map(e=>[e.node.id,e])),alpha=reveal*.54;
+  for(const edge of neuralEdges)for(const s of [edge.a,edge.b]){const e=existing.get(s.id);if(e){e.alpha=Math.max(e.alpha,alpha);continue;}
+    const p=project(s);if(!p.visible)continue;const entry={node:s,p,alpha,cluster:false,halo:false,neuralEndpoint:true};renderEntries.push(entry);existing.set(s.id,entry);individuals.add(s.id);}
+}
+function drawNeuralPaths(){
+  if(neuralStats.reveal<.003)return;const highlights=new Set([...activeLinks,...retiringLinks].map(l=>edgeKey(l.fromId,l.toId))),maxLength=Math.min(460,Math.min(width,height)*.65);
+  for(const edge of neuralEdges){if(highlights.has(edge.key))continue;const a=project(edge.a),b=project(edge.b);if(!a.visible||!b.visible)continue;
+    const dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);if(length<10||length>maxLength)continue;
+    const fade=neuralStats.reveal*(1-smooth(maxLength*.65,maxLength,length)),strength=.6+.4*edge.strength;
+    const breathe=reducedMotion.matches?1:.9+.1*Math.sin(animationTime*.00045+hash(edge.key)/4294967296*TAU);
+    const bend=Math.min(19,length*.055)*(hash(edge.key)%2?1:-1),cx=(a.x+b.x)/2-dy/length*bend,cy=(a.y+b.y)/2+dx/length*bend;
+    for(const [lineWidth,opacity] of [[1.8,.026],[.55,.145]]){ctx.globalAlpha=fade*strength*breathe*opacity;ctx.strokeStyle='#86a6c5';ctx.lineWidth=lineWidth;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(cx,cy,b.x,b.y);ctx.stroke();}
+    neuralStats.drawn++;
+  }
+  ctx.globalAlpha=1;
+}
+function makeFlow(){flow=[];if(!galaxy||visible.length<2)return;const topics=[...nodeIndex.values()].filter(n=>n.nodeType==='topic');
+  for(let i=0;i<Math.min(3,Math.floor(topics.length/2));i++){const a=topics[i],b=topics[topics.length-1-i];if(a!==b)flow.push({a,b,phase:hash(a.id)/4294967296,duration:24+i*9});}}
+function makeAtmosphere(){atmosphere=[];skyDust=[];dustLanes=[];stellarDust=[];lastGrainTime=-Infinity;lastGrainPose=null;
+  if(visible.length){const r=rng(370125);for(let i=0;i<Math.min(2200,240+visible.length*1.8);i++)skyDust.push({u:r(),v:r(),depth:.2+r()*.8,size:.35+r()*.68,alpha:.18+r()*.48,phase:r()*TAU,warm:r()<.22});}
+  if(visible.length>64){const perStar=Math.max(1,Math.min(5,Math.floor(6000/visible.length)));for(const owner of visible){const r=rng(hash('fine-dust:'+owner.id));for(let i=0;i<perStar&&stellarDust.length<6000;i++)stellarDust.push({x:owner.x+normal(r)*.060,y:owner.y+normal(r)*.018,z:owner.z+normal(r)*.060,owner,size:.28+r()*.44,phase:r()*TAU});}}
+  for(const s of visible.filter(s=>s.galacticComponent==='arm').sort((a,b)=>hash('lane:'+a.id)-hash('lane:'+b.id)).slice(0,180)){
+    const angle=s.armIndex*TAU/GALAXY.arms+GALAXY.winding*Math.log1p(s.orbitRadius/GALAXY.rootRadius)+.11;
+    dustLanes.push({x:Math.cos(angle)*s.orbitRadius,y:s.y+.025,z:Math.sin(angle)*s.orbitRadius,radius:.065+s.orbitRadius*.022});}
+  if(visible.length>64)return;
+  for(const s of visible){const r=rng(hash('dust:'+s.id));for(let i=0;i<160;i++){const theta=r()*TAU,spread=.035+Math.abs(normal(r))*.12;
+    atmosphere.push({owner:s,x:s.x+Math.cos(theta)*spread,y:s.y+Math.sin(theta)*spread*.65,z:s.z+normal(r)*.10,size:.35+r()*.55,alpha:.10+r()*.26});}}
+}
+
+// Reuse the cached Canvas glow sprites. There was no shader / Bloom / Three.js to retain.
+function starSprite(color){if(sprites.has(color))return sprites.get(color);const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');
+  const halo=g.createRadialGradient(48,48,0,48,48,48);halo.addColorStop(0,color);halo.addColorStop(.1,color+'a0');halo.addColorStop(.3,color+'28');halo.addColorStop(1,color+'00');g.fillStyle=halo;g.fillRect(0,0,96,96);sprites.set(color,c);return c;}
+function flareSprite(color){const key='flare:'+color;if(sprites.has(key))return sprites.get(key);
+  const c=document.createElement('canvas');c.width=c.height=192;const g=c.getContext('2d');g.translate(96,96);
+  function ray(length,thickness,opacity){const beam=g.createLinearGradient(-length,0,length,0);beam.addColorStop(0,color+'00');beam.addColorStop(.32,color+'15');beam.addColorStop(.485,color+'b0');beam.addColorStop(.5,'#ffffff');beam.addColorStop(.515,color+'b0');beam.addColorStop(.68,color+'15');beam.addColorStop(1,color+'00');g.globalAlpha=opacity;g.fillStyle=beam;g.fillRect(-length,-thickness/2,length*2,thickness);}
+  ray(94,1.5,1);g.rotate(Math.PI/2);ray(82,1.5,1);g.rotate(Math.PI/4);ray(37,.85,.55);g.rotate(Math.PI/2);ray(37,.85,.55);
+  g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;const core=g.createRadialGradient(96,96,0,96,96,8);core.addColorStop(0,'#ffffff');core.addColorStop(.2,'#ffffffdd');core.addColorStop(.55,color+'60');core.addColorStop(1,color+'00');g.fillStyle=core;g.fillRect(88,88,16,16);sprites.set(key,c);return c;}
+function cloudSprite(tone='cool'){const key='cloud:'+tone;if(sprites.has(key))return sprites.get(key);const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');const color=tone==='warm'?'#fff0d8':'#b6c6d9';const glow=g.createRadialGradient(64,64,0,64,64,64);glow.addColorStop(0,color+'80');glow.addColorStop(.35,color+'36');glow.addColorStop(.7,color+'0e');glow.addColorStop(1,color+'00');g.fillStyle=glow;g.fillRect(0,0,128,128);sprites.set(key,c);return c;}
+function resize(){const r=canvas.getBoundingClientRect();width=r.width;height=r.height;dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);base=Math.max(30,Math.min(width*.52,(height-180)*.68));fogRatio=Math.min(1,dpr*(DEMO_COUNT>=3000?.30:.4));fogCanvas.width=Math.ceil(width*fogRatio);fogCanvas.height=Math.ceil(height*fogRatio);grainRatio=Math.min(1.5,dpr);grainCanvas.width=Math.ceil(width*grainRatio);grainCanvas.height=Math.ceil(height*grainRatio);lastFogTime=lastGrainTime=-Infinity;}
+new ResizeObserver(resize).observe($('universe'));
+function cameraView(){const cy=Math.cos(camera.yaw),sy=Math.sin(camera.yaw),cp=Math.cos(camera.pitch),sp=Math.sin(camera.pitch),cr=Math.cos(GALAXY.screenTilt),sr=Math.sin(GALAXY.screenTilt);return {cy,sy,cp,sp,cr,sr,focal:base*3.35};}
+function cameraPlaneOffset(u,v){const x=u*view.cr+v*view.sr,y=-u*view.sr+v*view.cr;return v3(x*view.cy-y*view.sp*view.sy,y*view.cp,-x*view.sy-y*view.sp*view.cy);}
+function project(s){const drift=!reducedMotion.matches&&s.nodeType==='memory';
+  const dx=s.x+(drift?Math.sin(animationTime*.00055+s.phase)*.007:0)-camera.look.x;
+  const dy=s.y+(drift?Math.cos(animationTime*.00043+s.phase)*.005:0)-camera.look.y;
+  const dz=s.z+(drift?Math.sin(animationTime*.00037+s.phase)*.004:0)-camera.look.z;
+  const x=dx*view.cy-dz*view.sy,z0=dx*view.sy+dz*view.cy,y=dy*view.cp-z0*view.sp,z=dy*view.sp+z0*view.cp;
+  const depth=camera.distance-z;if(depth<.035)return {x:-10000,y:-10000,scale:0,depth,visible:false};
+  const scale=view.focal/depth;return {x:width/2+(x*view.cr-y*view.sr)*scale,y:height/2+(x*view.sr+y*view.cr)*scale,scale,depth,visible:true};}
+function updateCamera(dt,t){
+  const ease=reducedMotion.matches?1:1-Math.exp(-dt*6.5);
+  if(!gesture){target.yaw+=velocity.yaw*dt;target.pitch=clamp(target.pitch+velocity.pitch*dt,-1.2,1.2);const decay=Math.exp(-dt*5);velocity.yaw*=decay;velocity.pitch*=decay;}
+  camera.yaw=mix(camera.yaw,target.yaw,ease);camera.pitch=mix(camera.pitch,target.pitch,ease);camera.distance=mix(camera.distance,target.distance,ease);
+  for(const k of ['x','y','z'])camera.look[k]=mix(camera.look[k],target.look[k],ease);
+  // Minute drift in 3D, disabled during interaction, focus, and reduced motion.
+  if(!animationPaused&&!reducedMotion.matches&&!focusedNode&&t-lastInput>14000&&!gesture)camera.yaw+=Math.sin(t*.00008)*.000018;
+  view=cameraView();
+}
+
+// Continuous tree cut: parent cloud fades while the real children unfold along their XYZ paths.
+function nodeSplit(n,p){
+  if(n.nodeType==='galaxy')return 1;
+  if(focusedNode&&(n===focusedNode||isAncestor(n,focusedNode)))return 1;
+  if(n.count<=4)return 1;
+  const pixels=n.radius*p.scale;
+  const threshold=n.nodeType==='stage'?1800:n.nodeType==='topic'?300:Math.max(110,Math.sqrt(n.count)*22);
+  return smooth(threshold*.72,threshold*1.22,pixels);
+}
+function isAncestor(a,b){let p=b?.parent;while(p){if(p===a)return true;p=p.parent;}return false;}
+function displayPosition(node,parent,expansion){if(!parent||expansion>=.999)return node;return {x:mix(parent.x,node.x,expansion),y:mix(parent.y,node.y,expansion),z:mix(parent.z,node.z,expansion)};}
+let renderEntries=[],cutNodes=[],individuals=new Set(),sampleBudget=0;
+const splitState=new WeakMap();
+function traverse(node,alpha=1,parent=null,expansion=1){
+  if(alpha<.012)return;const pos=displayPosition(node,parent,expansion),p=project(pos);
+  if(node.nodeType==='memory'){if(!p.visible||p.x< -30||p.y< -30||p.x>width+30||p.y>height+30)return;
+    renderEntries.push({node,p,alpha,cluster:false});individuals.add(node.id);return;}
+  // A parent centre can be behind the near plane while its members surround the camera.
+  // Never discard the entire subtree in that case; descend until actual leaves can be culled.
+  if(p.depth+node.radius<.035)return;
+  if(!p.visible||p.depth<node.radius*1.25){for(const child of node.children)traverse(child,alpha,node,1);return;}
+  const screenRadius=node.radius*p.scale;
+  if(node.nodeType!=='galaxy'&&(p.x+screenRadius< -60||p.y+screenRadius< -60||p.x-screenRadius>width+60||p.y-screenRadius>height+60))return;
+  let split=visible.length<=64?1:nodeSplit(node,p);
+  if(node.nodeType==='galaxy')split=1;
+  // Screen-space backpressure only at dense closeups, preserving selected / focused branches.
+  if(renderEntries.length>850&&node!==focusedNode&&!isAncestor(node,focusedNode)&&node.nodeType!=='galaxy')split=0;
+  const previous=splitState.get(node)??split;
+  split=reducedMotion.matches?split:mix(previous,split,1-Math.exp(-frameDelta*8));splitState.set(node,split);
+  if(split<.995&&node.nodeType!=='galaxy'){renderEntries.push({node,p,alpha:alpha*(1-split),cluster:true});cutNodes.push(node);}
+  if(split>.008){let children=node.children;if(focusedNode){children=children.slice().sort((a,b)=>Number(b===focusedNode||isAncestor(b,focusedNode))-Number(a===focusedNode||isAncestor(a,focusedNode)));}for(const child of children)traverse(child,alpha*split,node,split);}
+}
+let tileCache=new Map(),tileCachePixels=0;
+function clusterTiles(node){
+  const key=Math.round(camera.yaw/.12)+','+Math.round(camera.pitch/.12),cached=tileCache.get(node);
+  if(cached?.key===key){tileCache.delete(node);tileCache.set(node,cached);return cached.tiles;}
+  const halves=[[],[]];
+  for(const s of node.samples){const dx=s.x-node.x,dy=s.y-node.y,dz=s.z-node.z;
+    const x0=dx*view.cy-dz*view.sy,z0=dx*view.sy+dz*view.cy,y0=dy*view.cp-z0*view.sp,z=dy*view.sp+z0*view.cp;
+    halves[z<0?0:1].push({s,x:x0*view.cr-y0*view.sr,y:x0*view.sr+y0*view.cr,z});}
+  const tiles=[];
+  for(const points of halves){if(!points.length)continue;let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,wx=0,wy=0,wz=0;
+    for(const p of points){minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);wx+=p.s.x;wy+=p.s.y;wz+=p.s.z;}
+    const fog=.06+Math.min(.14,node.radius*.07),margin=fog*2.6;minX-=margin;maxX+=margin;minY-=margin;maxY+=margin;
+    const worldW=maxX-minX,worldH=maxY-minY,resolution=Math.min(230,384/Math.max(worldW,worldH));
+    const c=document.createElement('canvas');c.width=Math.max(24,Math.ceil(worldW*resolution));c.height=Math.max(24,Math.ceil(worldH*resolution));const g=c.getContext('2d');
+    const weight=Math.min(1.35,.35+Math.log2(node.count+1)*.1);
+    for(const p of points){const x=(p.x-minX)*resolution,y=(p.y-minY)*resolution,r=fog*resolution;
+      const cloud=cloudSprite(p.s.spatialLayer==='outer'?'cool':'warm');
+      g.globalAlpha=(.07+.14*p.s.activation)*weight;g.drawImage(cloud,x-r,y-r*.8,r*2,r*1.6);
+      g.globalAlpha=(.012+.012*p.s.activation)*weight;g.drawImage(cloud,x-r*2.5,y-r*1.9,r*5,r*3.8);
+    }
+    const count=points.length,centroid=v3(wx/count,wy/count,wz/count),dx=centroid.x-node.x,dy=centroid.y-node.y,dz=centroid.z-node.z;
+    const rawX=dx*view.cy-dz*view.sy,z0=dx*view.sy+dz*view.cy,rawY=dy*view.cp-z0*view.sp,offsetX=rawX*view.cr-rawY*view.sr,offsetY=rawX*view.sr+rawY*view.cr;
+    tiles.push({image:c,worldW,worldH,offsetX:minX-offsetX,offsetY:minY-offsetY,center:centroid,count});
+  }
+  const pixels=tiles.reduce((sum,t)=>sum+t.image.width*t.image.height,0);
+  if(cached)tileCachePixels-=cached.pixels;
+  tileCache.delete(node);tileCache.set(node,{key,tiles,pixels});tileCachePixels+=pixels;
+  // Bound pixels as well as node count. A tiny group must not evict a large region
+  // merely because both count as one cache entry (which would thrash in dense scenes).
+  while(tileCache.size>512||tileCachePixels>24000000){const oldest=tileCache.keys().next().value;tileCachePixels-=tileCache.get(oldest).pixels;tileCache.delete(oldest);}
+  return tiles;
+}
+function drawCluster(entry,t){const {node,alpha}=entry;const size=node.samples.length;if(!size)return;
+  const wave=.5+.5*Math.sin(animationTime*.001*TAU/(4.5+node.phase*.35)+node.phase);
+  const breathing=reducedMotion.matches?.82+.18*wave:.64+.36*wave;
+  // Member density rasterized into two depth slabs: inexpensive, irregular, and with parallax.
+  // Leaves retain exact XYZ projection; these coarse slabs are only the distant representation.
+  for(const tile of clusterTiles(node)){const p=project(tile.center);if(!p.visible)continue;fogCtx.globalAlpha=alpha*breathing*clamp(camera.distance/p.depth,.35,1.15);
+    fogCtx.drawImage(tile.image,p.x+tile.offsetX*p.scale,p.y+tile.offsetY*p.scale,tile.worldW*p.scale,tile.worldH*p.scale);sampleBudget+=tile.count;}
+}
+function drawSkyDust(){if(!visible.length)return;let i=0;
+  for(const s of skyDust){const dx=camera.yaw*(12+26*s.depth)-camera.look.x*s.depth*9,dy=camera.pitch*(8+15*s.depth)-camera.look.y*s.depth*9;
+    const x=((s.u*width+dx)%width+width)%width,y=((s.v*height+dy)%height+height)%height;
+    const breathe=reducedMotion.matches?1:.9+.1*Math.sin(animationTime*.00028+s.phase);ctx.globalAlpha=s.alpha*breathe;ctx.fillStyle=s.warm?'#eddbbf':'#cedef2';ctx.fillRect(x,y,s.size,s.size);if(++i%173===0){ctx.globalAlpha=s.alpha*.4;ctx.drawImage(flareSprite(s.warm?'#ffe7c4':'#dfedff'),x-5,y-5,10,10);}}
+  photoStats.skyDust=skyDust.length;ctx.globalAlpha=1;
+}
+function drawDataDust(t){if(!stellarDust.length)return;const pose=[camera.yaw,camera.pitch,camera.distance,camera.look.x,camera.look.y,camera.look.z],moving=!lastGrainPose||pose.some((v,i)=>Math.abs(v-lastGrainPose[i])>.0002);
+  if(moving||t-lastGrainTime>150){grainCtx.setTransform(grainRatio,0,0,grainRatio,0,0);grainCtx.clearRect(0,0,width,height);
+    for(const d of stellarDust){const p=project(d);if(!p.visible||p.x<0||p.y<0||p.x>width||p.y>height)continue;const pulse=reducedMotion.matches?1:.92+.08*Math.sin(animationTime*.00035+d.phase);
+      grainCtx.globalAlpha=(.12+.2*d.owner.activation)*d.owner.baseBrightness*pulse;grainCtx.fillStyle=d.owner.spatialLayer==='outer'?'#d7e1f1':'#fff0d7';const size=d.size*clamp(Math.sqrt(p.scale/(base*.38)),.8,1.7);grainCtx.fillRect(p.x,p.y,size,size);}
+    lastGrainTime=t;lastGrainPose=pose;}
+  ctx.globalAlpha=1;ctx.drawImage(grainCanvas,0,0,width,height);
+}
+function cutDustLanes(){if(!dustLanes.length||!cutNodes.length)return;fogCtx.save();fogCtx.globalCompositeOperation='destination-out';
+  for(const d of dustLanes){const p=project(d);if(!p.visible)continue;const radius=clamp(d.radius*p.scale,2,54);fogCtx.globalAlpha=.34;fogCtx.drawImage(cloudSprite(),p.x-radius,p.y-radius,radius*2,radius*2);photoStats.dustCuts++;}
+  fogCtx.restore();
+}
+function drawResolvedClusterStars(){
+  const clusters=renderEntries.filter(e=>e.cluster&&e.alpha>.015),points=new Map(),perCluster=Math.max(1,Math.floor(2400/Math.max(1,clusters.length)));
+  for(const e of clusters){const take=Math.min(e.node.samples.length,perCluster);for(let i=0;i<take;i++){const s=e.node.samples[Math.floor(i*e.node.samples.length/take)];if(individuals.has(s.id))continue;const old=points.get(s.id);if(!old||old.alpha<e.alpha)points.set(s.id,{s,alpha:e.alpha});}}
+  let flares=0;
+  for(const {s,alpha} of points.values()){if(photoStats.fieldStars>=2400)break;const p=project(s);if(!p.visible||p.x< -8||p.y< -8||p.x>width+8||p.y>height+8)continue;
+    const breath=memoryBreath(s,animationTime),brightness=alpha*Math.min(1,s.baseBrightness*1.25)*breath.brightness*clamp(camera.distance/p.depth,.4,1.15);
+    const warm=s.spatialLayer!=='outer'||s.kind==='event'||s.kind==='diary',color=warm?'#fff0dd':'#dcecff';
+    const r=(.45+s.importance*.66)*clamp(Math.sqrt(p.scale/(base*.38)),.65,1.5);
+    ctx.globalAlpha=clamp(brightness*.98,0,1);ctx.fillStyle=color;if(r<.67)ctx.fillRect(p.x-r,p.y-r,r*2,r*2);else{ctx.beginPath();ctx.arc(p.x,p.y,r,0,TAU);ctx.fill();}
+    if(flares<36&&s.activation>.58&&s.importance>.72&&hash(s.id)%4===0){const size=6+s.importance*7;ctx.globalAlpha=brightness*.70;ctx.drawImage(flareSprite(color),p.x-size,p.y-size,size*2,size*2);ctx.globalAlpha=brightness*.34;ctx.drawImage(starSprite(color),p.x-size*.7,p.y-size*.7,size*1.4,size*1.4);flares++;}
+    photoStats.fieldStars++;
+  }
+  ctx.globalAlpha=1;
+}
+function memoryBreath(s,t){
+  // Reduced-motion mode keeps gentle opacity breathing, without size movement.
+  const theta=t*.001*s.speed/(reducedMotion.matches?1.25:1)+s.phase;
+  const wave=.5+.5*Math.sin(theta),amplitude=reducedMotion.matches?.28:s.amplitude;
+  return {wave,brightness:1-amplitude+amplitude*wave,core:reducedMotion.matches?1:.90+.20*wave,halo:reducedMotion.matches?1:.55+1.0*wave};
+}
+function drawMemory(entry,t){const {node:s,p,alpha}=entry;
+  const breath=memoryBreath(s,animationTime),pulse=breath.brightness;
+  const wake=pulses.get(s.id),elapsed=wake?(t-wake.time)/1000:-1;
+  const response=elapsed>=0&&elapsed<2?Math.sin(Math.min(1,elapsed/.65)*Math.PI)*Math.exp(-elapsed*.8)*wake.strength:0;
+  const depthFade=clamp(camera.distance/p.depth,.40,1.08);
+  const brightness=s.baseBrightness*pulse*alpha*depthFade;
+  const r=(1.25+s.importance*1.9)*clamp(Math.sqrt(p.scale/(base*.43)),.6,1.65)*breath.core;
+  const crowded=individuals.size>240;
+  const color=typeOf(s.kind).color,halo=r*((s.identityCore?7:crowded?7.5:11)+response*6)*breath.halo;
+  if(entry.halo!==false||s===selected||s===hovered||response>0){
+    ctx.globalAlpha=clamp(brightness*(s.identityCore?.70:.95)+response*.3,0,1);ctx.drawImage(starSprite(color),p.x-halo,p.y-halo,halo*2,halo*2);
+    if((s.activation>.5&&(!crowded||(s.importance>.75&&hash(s.id)%3===0)))||s===selected||s===hovered){const flare=r*(8+5*breath.wave+response*4);ctx.globalAlpha=clamp(brightness*(.4+.55*breath.wave)+response*.3,0,1);ctx.drawImage(flareSprite(color),p.x-flare,p.y-flare,flare*2,flare*2);}
+  }
+  ctx.globalAlpha=clamp(brightness+response*.25,0,1);ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,r,0,TAU);ctx.fill();
+  ctx.globalAlpha=brightness*.90;ctx.fillStyle='#f4f8ff';ctx.beginPath();ctx.arc(p.x,p.y,r*.43,0,TAU);ctx.fill();
+  if(s===selected||s===hovered){ctx.globalAlpha=.38*alpha;ctx.strokeStyle='#d3dce6';ctx.lineWidth=.65;ctx.beginPath();ctx.arc(p.x,p.y,r+5,0,TAU);ctx.stroke();}
+  if(wake&&elapsed>=0&&elapsed<1.7&&!reducedMotion.matches){ctx.globalAlpha=(1-elapsed/1.7)*.2*wake.strength;ctx.strokeStyle=color;ctx.lineWidth=.7;ctx.beginPath();ctx.arc(p.x,p.y,r+elapsed*17,0,TAU);ctx.stroke();}
+  entry.r=r;
+}
+function drawMemberAtmosphere(t){
+  // Low-count scenes retain sparse member-bound dust. Hiding memories removes it as well.
+  // Every mote has an owner ID; these are atmospheric grains, not extra memory records.
+  if(visible.length>64)return;const sprite=cloudSprite();
+  for(const s of visible){const p=project(s);if(!p.visible)continue;const radius=clamp(p.scale*.33,20,110);ctx.globalAlpha=(.20+.28*s.activation)*clamp(camera.distance/p.depth,.3,1);ctx.drawImage(sprite,p.x-radius,p.y-radius*.62,radius*2,radius*1.24);}
+  ctx.fillStyle='#a0afc0';for(const grain of atmosphere){const p=project(grain);if(!p.visible||p.x<0||p.y<0||p.x>width||p.y>height)continue;
+    const shimmer=reducedMotion.matches?1:.8+.65*Math.pow(.5+.5*Math.sin(animationTime*.00065+grain.owner.phase+grain.x*13),6);
+    ctx.globalAlpha=clamp(grain.alpha*1.5*grain.owner.baseBrightness*shimmer,0,1);ctx.fillRect(p.x,p.y,grain.size,grain.size);}
+}
+function retireChain(){const now=performance.now();for(const link of activeLinks)retiringLinks.push({...link,leaveAt:now});activeLinks=[];retiringLinks=retiringLinks.slice(-6);}
+function chainOpacity(link,t){return link.leaveAt?1-clamp((t-link.leaveAt)/350,0,1):smooth(0,460,t-link.start);}
+function revealChainEntries(t){
+  retiringLinks=retiringLinks.filter(l=>t-l.leaveAt<350);const existing=new Map(renderEntries.filter(e=>!e.cluster).map(e=>[e.node.id,e]));
+  function reveal(id,alpha){const s=memoryIndex.get(id);if(!s||hidden.has(s.kind))return;const p=project(s);if(!p.visible||p.x< -30||p.y< -30||p.x>width+30||p.y>height+30)return;
+    const entry=existing.get(id);if(entry){entry.alpha=Math.max(entry.alpha,alpha);entry.p=p;}else{const e={node:s,p,alpha,cluster:false,halo:true,chainEndpoint:true};renderEntries.push(e);existing.set(id,e);individuals.add(id);chainStats.promoted++;}}
+  for(const link of [...retiringLinks,...activeLinks]){const alpha=chainOpacity(link,t);if(alpha<=.005)continue;reveal(link.fromId,alpha);reveal(link.toId,alpha);}
+}
+function drawLinks(t){
+  for(const link of [...retiringLinks,...activeLinks]){const from=memoryIndex.get(link.fromId),to=memoryIndex.get(link.toId);if(!from||!to||hidden.has(from.kind)||hidden.has(to.kind))continue;
+    const a=project(from),b=project(to),fade=chainOpacity(link,t);if(!a.visible||!b.visible||fade<=.005)continue;
+    const dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);if(length<2)continue;
+    const bend=Math.min(32,length*.10)*(hash(link.fromId+link.toId)%2?1:-1);
+    const c={x:(a.x+b.x)/2-dy/length*bend,y:(a.y+b.y)/2+dx/length*bend};
+    const progress=link.leaveAt?1:smooth(0,620,t-link.start),u=progress,v=1-u;
+    const end={x:v*v*a.x+2*v*u*c.x+u*u*b.x,y:v*v*a.y+2*v*u*c.y+u*u*b.y};
+    const control={x:mix(a.x,c.x,u),y:mix(a.y,c.y,u)},strength=.55+.45*link.strength;
+    for(const [lineWidth,opacity,color] of [[6,.07,'#9dbfef'],[2.3,.18,'#adcef7'],[.85,.72,'#c6ddfa']]){ctx.globalAlpha=fade*opacity*strength;ctx.lineWidth=lineWidth;ctx.strokeStyle=color;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(control.x,control.y,end.x,end.y);ctx.stroke();}
+    if(!reducedMotion.matches&&!link.leaveAt){const q=((animationTime/6000+hash(link.toId)/4294967296)%1)*progress,w=1-q,x=w*w*a.x+2*w*q*c.x+q*q*b.x,y=w*w*a.y+2*w*q*c.y+q*q*b.y;
+      ctx.globalAlpha=fade*.60;ctx.drawImage(starSprite('#d7e8ff'),x-7,y-7,14,14);ctx.fillStyle='#e9f4ff';ctx.beginPath();ctx.arc(x,y,1,0,TAU);ctx.fill();}
+    chainStats.drawn++;
+  }
+  ctx.globalAlpha=1;
+}
+function drawFlow(t){if(reducedMotion.matches)return;for(const f of flow){const u=(animationTime/1000/f.duration+f.phase)%1,fade=Math.sin(u*Math.PI)**2;
+  const p=project({x:mix(f.a.x,f.b.x,u),y:mix(f.a.y,f.b.y,u)+Math.sin(u*Math.PI)*.12,z:mix(f.a.z,f.b.z,u)});if(!p.visible)continue;
+  ctx.globalAlpha=.13*fade;ctx.fillStyle='#bac4d0';ctx.beginPath();ctx.arc(p.x,p.y,.8,0,TAU);ctx.fill();}}
+function cellKey(x,y){return Math.floor(x/28)+','+Math.floor(y/28);}
+function promoteAnchors(){const existing=new Map(renderEntries.filter(e=>!e.cluster).map(e=>[e.node.id,e]));
+  for(const s of anchorStars){const p=project(s);if(!p.visible||p.x< -30||p.y< -30||p.x>width+30||p.y>height+30)continue;const entry=existing.get(s.id);if(entry){entry.alpha=1;entry.p=p;entry.halo=true;entry.anchor=true;}else{renderEntries.push({node:s,p,alpha:1,cluster:false,halo:true,anchor:true});individuals.add(s.id);}}
+}
+function drawIdentityNucleus(){if(!identityStars.length)return;const p=project(v3());if(!p.visible)return;
+  let light=0;for(const s of identityStars)light+=s.baseBrightness*memoryBreath(s,animationTime).brightness;light/=identityStars.length;
+  const radius=clamp(p.scale*.70,14,190),flatten=.50+.35*Math.abs(Math.sin(camera.pitch));ctx.save();ctx.translate(p.x,p.y);ctx.rotate(GALAXY.screenTilt);
+  ctx.globalAlpha=.30+.42*light;ctx.drawImage(cloudSprite('warm'),-radius,-radius*flatten,radius*2,radius*flatten*2);ctx.globalAlpha=.45+.35*light;ctx.drawImage(cloudSprite('warm'),-radius*.5,-radius*flatten*.5,radius,radius*flatten);ctx.globalAlpha=.24*light;ctx.drawImage(starSprite('#fff0d4'),-radius*.65,-radius*flatten*.65,radius*1.3,radius*flatten*1.3);ctx.restore();
+  if(!selected&&!focusedNode&&camera.distance>4){ctx.globalAlpha=.55;ctx.fillStyle='#96b4c9';ctx.font='10px "Microsoft YaHei",sans-serif';ctx.textAlign='center';ctx.fillText('核心记忆',p.x,p.y+p.scale*.25+21);}
+  ctx.globalAlpha=1;
+}
+let lastHud=0;
+function draw(t){
+  frameId=0;lastRenderedAt=performance.now();
+  const elapsed=Math.max(0,(t-lastTime)/1000||1/60),dt=Math.min(.05,elapsed);frameDelta=dt;lastTime=t;sceneTime=t;
+  if(!animationPaused)animationTime+=Math.min(elapsed,.5)*1000;
+  updateCamera(dt,t);
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
+  photoStats={fieldStars:0,skyDust:0,dustCuts:0};drawSkyDust();
+  renderEntries=[];cutNodes=[];individuals=new Set();sampleBudget=0;chainStats={drawn:0,promoted:0};
+  if(galaxy&&visible.length)traverse(galaxy);
+  promoteAnchors();
+  prepareNeuralPaths(t);
+  revealChainEntries(t);
+  renderEntries.sort((a,b)=>b.p.depth-a.p.depth);
+  if(individuals.size>240){const cells=new Map();for(const e of renderEntries){if(e.cluster)continue;e.halo=false;const key=Math.floor(e.p.x/40)+','+Math.floor(e.p.y/40),old=cells.get(key);if(!old||e.node.activation+e.node.importance*.1>old.node.activation+old.node.importance*.1)cells.set(key,e);}for(const e of cells.values())e.halo=true;}
+  if(cutNodes.length){
+    const pose=[camera.yaw,camera.pitch,camera.distance,camera.look.x,camera.look.y,camera.look.z];
+    const moving=!lastFogPose||pose.some((v,i)=>Math.abs(v-lastFogPose[i])>.0002);
+    // Soft density fields are bandwidth-heavy, not vertex-heavy. Composite them at
+    // low resolution. Idle cloud breathing needs only ~11Hz; exact stars stay at full frame rate.
+    if(moving||t-lastFogTime>(DEMO_COUNT>=3000?120:90)){fogCtx.setTransform(fogRatio,0,0,fogRatio,0,0);fogCtx.clearRect(0,0,width,height);for(const e of renderEntries)if(e.cluster)drawCluster(e,t);cutDustLanes();lastFogTime=t;lastFogPose=pose;}
+    else sampleBudget=cutNodes.reduce((n,c)=>n+c.samples.length,0);
+    ctx.globalAlpha=1;ctx.drawImage(fogCanvas,0,0,width,height);
+  }else lastFogTime=-Infinity;
+  drawDataDust(t);
+  drawResolvedClusterStars();
+  drawMemberAtmosphere(t);drawIdentityNucleus();drawNeuralPaths();drawLinks(t);drawFlow(t);
+  for(const e of renderEntries)if(!e.cluster)drawMemory(e,t);
+  // Selected strong neighbours may lie inside a collapsed sibling. Reveal at most six.
+  for(const [id,wake] of pulses){if(t-wake.time>2400){pulses.delete(id);continue;}const s=memoryIndex.get(id);if(!s||hidden.has(s.kind)||individuals.has(id))continue;
+    const p=project(s);if(p.visible)drawMemory({node:s,p,alpha:.55},t);}
+  ctx.globalAlpha=1;projected=renderEntries;pickGrid=new Map();
+  for(const e of projected){if(e.alpha<.18)continue;const key=cellKey(e.p.x,e.p.y);if(!pickGrid.has(key))pickGrid.set(key,[]);pickGrid.get(key).push(e);}
+  lodStats={clusters:cutNodes.length,memories:individuals.size,samples:sampleBudget,drawn:renderEntries.length};
+  if(pointer&&!gesture)updateHover(pointer.x,pointer.y);
+  if(t-lastHud>180){updateHud();lastHud=t;}
+  frameId=requestAnimationFrame(draw);
+}
+function currentLevel(){if(visible.length<=64)return '记忆星';const nodes=renderEntries.filter(e=>e.alpha>.5&&!e.anchor&&!e.chainEndpoint&&!e.neuralEndpoint);if(nodes.some(e=>e.node.nodeType==='memory'))return '记忆星';if(nodes.some(e=>e.node.nodeType==='group'))return '记忆组';if(nodes.some(e=>e.node.nodeType==='topic'))return '主题星团';return '阶段星河';}
+function updateHud(){const level=currentLevel();$('level').textContent=level;$('header-total').textContent=stars.length;$('zoom-label').textContent=Math.round(homeDistance/camera.distance*100)+'%';$('visible-count').textContent=visible.length+' / '+stars.length;
+  $('density').textContent=lodStats.clusters?'· '+lodStats.clusters+' 个聚合星团':'';
+  $('back').hidden=!focusHistory.length&&!focusedNode;
+}
+
+function refreshVisible(){
+  if(selectedCluster)clearSelection();
+  const selectedId=selected?.id,focusId=focusedNode?.id;visible=stars.filter(s=>!hidden.has(s.kind));galaxy=buildHierarchy(visible);tileCache=new Map();tileCachePixels=0;lastFogTime=-Infinity;
+  identityStars=visible.filter(s=>s.identityCore);
+  const priority=(a,b)=>b.importance-a.importance||a.id.localeCompare(b.id);
+  anchorStars=[...identityStars.slice().sort(priority).slice(0,8),...visible.filter(s=>!s.identityCore&&(s.spatialLayer==='core'||s.spatialLayer==='inner')).sort(priority).slice(0,4)];
+  rebuildNeuralGraph();
+  focusedNode=focusId?(nodeIndex.get(focusId)||memoryIndex.get(focusId)||null):null;
+  focusHistory=focusHistory.filter(f=>!f.id||nodeIndex.has(f.id)||memoryIndex.has(f.id));
+  hovered=null;$('tooltip').hidden=true;makeFlow();makeAtmosphere();
+  if(selectedId){const next=memoryIndex.get(selectedId);if(next)showDetail(next,false);else clearSelection();}
+  $('first').disabled=!visible.length;
+  homeDistance=clamp((galaxy?.radius||0)*3.2,1.0,HOME_DISTANCE);
+  $('summary').textContent='设定留在星核，记忆沿旋臂缓缓延展。';
+  $('stage-sub').textContent=stars.length&&!visible.length?'所有类型已隐藏':SIMULATION?DEMO_COUNT+' 条虚构记忆 · 旋涡星系 · 滚轮靠近可看神经通路':'中心星核 · 旋臂记忆 · 三维星盘';
+  updateHud();
+}
+function renderLegend(){const box=$('legend');box.replaceChildren();const counts=new Map();for(const s of stars)counts.set(s.kind,(counts.get(s.kind)||0)+1);
+  const kinds=[...Object.keys(TYPES),...counts.keys()].filter((k,i,a)=>a.indexOf(k)===i);
+  for(const kind of kinds){const t=typeOf(kind),b=document.createElement('button');b.className='chip'+(hidden.has(kind)?' off':'');b.setAttribute('aria-pressed',String(!hidden.has(kind)));b.style.setProperty('--color',t.color);
+    const dot=document.createElement('span');dot.className='dot';const label=document.createElement('span');label.textContent=t.label;const n=document.createElement('span');n.className='n';n.textContent=counts.get(kind)||0;b.append(dot,label,n);
+    b.onclick=()=>{hidden.has(kind)?hidden.delete(kind):hidden.add(kind);refreshVisible();renderLegend();};box.append(b);}
+}
+function showMessage(title,copy,retry=false){$('message').hidden=false;$('message-title').textContent=title;$('message-copy').textContent=copy;$('retry').hidden=!retry;}
+async function load(){if(loading)return;loading=true;const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
+  try{if(location.protocol==='file:')throw new Error('file:// 打不开数据');const res=await fetch(DATA_URL,{cache:'no-store',signal:controller.signal});if(!res.ok)throw new Error('HTTP '+res.status);let data=await res.json();if(SIMULATION){data=data.scenarios?.['longTerm'+DEMO_COUNT];if(!data)throw new Error('Simulation fixture missing');}if(!Array.isArray(data.stars))throw new Error('Invalid stars');
+    const selectedId=selected?.id,firstLoad=!stars.length;stars=data.stars.map(adaptMemory);selected=null;refreshVisible();buildRelations();renderLegend();$('total').textContent=stars.length;
+    if(firstLoad){target.look={...galaxy.framingCenter};camera.look={...target.look};target.distance=homeDistance;camera.distance=homeDistance;}
+    $('connection').textContent=SIMULATION?'模拟星河 · '+stars.length+' 条':'数据源 · '+stars.length+' 条';$('mode').textContent=SIMULATION?'SIMULATION':'MEMORY MAP';
+    $('message').hidden=stars.length>0;if(!stars.length)showMessage('这里还没有记忆','聊几句，再来看看星河。');
+    const next=memoryIndex.get(selectedId);if(next)showDetail(next,false);else clearSelection();
+  }catch(error){$('connection').textContent=stars.length?'连接中断 · 保留上次星图':'本地记忆未连接';
+    if(!stars.length){
+      const why=location.protocol==='file:'
+        ? '不要双击打开 brain.html。先跑 node serve.mjs 8080，再访问 http://127.0.0.1:8080'
+        : '取数据失败（'+error.message+'）。确认服务在跑：http://127.0.0.1:8080/data.json 能直接打开吗？';
+      showMessage('暂时没有接收到星光',why,true);
+    }
+    console.error('Memory fetch:',error.message);}
+  finally{clearTimeout(timeout);loading=false;}
+}
+function scopeLabel(scope){if(scope==='global')return '共用';if(scope?.startsWith('u:'))return '私聊 · '+scope.slice(2);if(scope?.startsWith('g:'))return '群聊 · '+scope.slice(2);return scope||'—';}
+function wakeMemory(s){
+  const now=performance.now();pulses.clear();pulses.set(s.id,{time:now,strength:1});const seen=new Set([s.id]);
+  const first=activeLinks;
+  for(let i=0;i<first.length;i++){const link=first[i],time=now+95+i*22;seen.add(link.star.id);pulses.set(link.star.id,{time,strength:.5});}
+  let second=0;for(const link of first){for(const next of relations.get(link.star.id)||[]){if(seen.has(next.star.id)||hidden.has(next.star.kind))continue;seen.add(next.star.id);pulses.set(next.star.id,{time:now+260+second*45,strength:.22});if(++second>=2)break;}if(second>=2)break;}
+}
+function syncChain(s,animate){
+  if(activeLinks.some(l=>l.fromId!==s.id))retireChain();
+  const previous=new Map(activeLinks.map(l=>[l.toId,l])),now=performance.now();
+  activeLinks=(relations.get(s.id)||[]).filter(l=>memoryIndex.has(l.star.id)&&!hidden.has(l.star.kind)).slice(0,3).map((link,i)=>({...link,fromId:s.id,toId:link.star.id,star:memoryIndex.get(link.star.id),start:previous.get(link.star.id)?.start??(animate?now+95+i*22:now-700)}));
+  const list=$('related-list');list.replaceChildren();
+  for(const link of activeLinks){const b=document.createElement('button');b.className='related-memory';b.textContent=typeOf(link.star.kind).label+' · '+(link.star.text||'无正文');b.title=link.star.whenLabel||'未标注时间';b.onclick=()=>showDetail(memoryIndex.get(link.toId));list.append(b);}
+  $('d-related').textContent=activeLinks.length?'关联星链 · '+activeLinks.length+' 条 · '+(activeLinks.every(l=>l.explicit)?'已记录关联':activeLinks.some(l=>l.explicit)?'含词语推断':'相似词语推断'):'暂无足够强的关联事件。';
+}
+function frameChain(s,force=false){const targets=activeLinks.map(l=>l.star);if(!targets.length)return;const right=width-(width>700?340:20);
+  if(!force&&[s,...targets].every(n=>{const p=project(n);return p.visible&&p.x>35&&p.x<right&&p.y>165&&p.y<height-105;}))return;
+  const points=[s,...targets],center=v3();for(const n of points){center.x+=n.x/points.length;center.y+=n.y/points.length;center.z+=n.z/points.length;}
+  let radius=.15;for(const n of points)radius=Math.max(radius,Math.hypot(n.x-center.x,n.y-center.y,n.z-center.z));
+  const distance=clamp(radius+2.5*radius*view.focal/Math.max(160,Math.min(right-35,height-270)),.7,MAX_DISTANCE);
+  const shift=(width>700?155:0)*distance/view.focal,offset=cameraPlaneOffset(shift,0);center.x+=offset.x;center.y+=offset.y;center.z+=offset.z;target.look=center;target.distance=distance;velocity.yaw=velocity.pitch=0;lastInput=performance.now();
+}
+function showDetail(s,wake=true){if(!s)return;selected=s;selectedCluster=null;$('cluster-detail').hidden=true;const t=typeOf(s.kind);$('sidebar').classList.add('has-selection');$('intro').hidden=true;$('detail').hidden=false;$('d-kind').textContent=t.label;$('detail-dot').style.setProperty('--color',t.color);$('detail').style.setProperty('--accent',t.color);
+  $('d-text').textContent=s.text||'（无正文）';$('d-when').textContent=s.whenLabel||'未标注时间';$('d-scope').textContent=scopeLabel(s.scope);$('d-imp').textContent=Math.round(s.importance*100)+'%';$('d-act').textContent=Math.round(s.activation*100)+'%';$('imp-meter').style.width=(s.importance*100)+'%';$('act-meter').style.width=(s.activation*100)+'%';$('d-status').textContent=STATUS[s.status]||s.status||'—';$('d-source').textContent=SOURCE[s.source]||s.source||'—';$('d-id').textContent='MEMORY / '+s.id;
+  $('d-kind').textContent=t.label+' · '+({identity:'身份星核',core:'核心记忆',inner:'中心内层',outer:s.galacticComponent==='halo'?'外围晕星':'旋臂记忆'}[s.spatialLayer]||'');
+  const path=[];let n=s.parent;while(n&&n.nodeType!=='galaxy'){path.unshift(n.label);n=n.parent;}$('d-path').textContent=path.slice(0,3).join(' / ');
+  syncChain(s,wake);if(wake){wakeMemory(s);frameChain(s);}
+}
+function showCluster(n){retireChain();selectedCluster=n;selected=null;pulses.clear();$('sidebar').classList.add('has-selection');$('intro').hidden=true;$('detail').hidden=true;$('cluster-detail').hidden=false;
+  $('c-title').textContent=n.label;$('c-count').textContent=n.count+' 条记忆 · '+n.children.length+' 个内部节点';
+  $('c-copy').textContent=n.nodeType==='stage'?'靠近这片阶段星河，查看其中的主题。':n.nodeType==='topic'?'主题按正文关键词归组，包含真实的内部记忆。':'进入记忆组，查看每一颗星。';
+  const list=$('c-list');list.replaceChildren();for(const child of n.children.slice(0,8)){const b=document.createElement('button');b.textContent=child.nodeType==='memory'?(child.text||'无正文'):child.label+' · '+child.count;b.onclick=()=>{if(child.nodeType==='memory'){showDetail(child);focusOn(child);}else{showCluster(child);focusOn(child);}};list.append(b);}
+}
+function clearSelection(){retireChain();selected=null;selectedCluster=null;pulses.clear();$('related-list').replaceChildren();$('detail').hidden=true;$('cluster-detail').hidden=true;$('intro').hidden=false;$('sidebar').classList.remove('has-selection');}
+function focusOn(node,push=true){
+  if(push)focusHistory.push({id:focusedNode?.id||null,yaw:target.yaw,pitch:target.pitch,distance:target.distance,look:{...target.look}});
+  focusedNode=node;target.look=v3(node.x,node.y,node.z);target.distance=node.nodeType==='memory'?.40:clamp(node.radius*3.1,.48,5.7);velocity.yaw=velocity.pitch=0;lastInput=performance.now();
+  if(node===selected&&activeLinks.length)frameChain(node,true);
+}
+function exitFocus(){const previous=focusHistory.pop();if(previous){focusedNode=previous.id?(nodeIndex.get(previous.id)||memoryIndex.get(previous.id)||null):null;target.yaw=previous.yaw;target.pitch=previous.pitch;target.distance=previous.distance;target.look={...previous.look};}else reset();clearSelection();}
+function reset(){focusedNode=null;focusHistory=[];target.yaw=GALAXY.homeYaw;target.pitch=GALAXY.homePitch;target.distance=homeDistance;target.look={...(galaxy?.framingCenter||v3())};velocity.yaw=velocity.pitch=0;lastInput=performance.now();clearSelection();}
+function browse(direction){if(!visible.length)return;const index=selected?visible.indexOf(selected):direction>0?-1:0,s=visible[(index+direction+visible.length)%visible.length];showDetail(s);focusOn(s,!!focusedNode&&focusedNode.nodeType!=='memory');}
+function candidates(x,y){const gx=Math.floor(x/28),gy=Math.floor(y/28),hits=[];
+  for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++)for(const e of pickGrid.get((gx+dx)+','+(gy+dy))||[]){const distance=Math.hypot(e.p.x-x,e.p.y-y);if(distance<(e.cluster?24:Math.max(10,(e.r||3)+5)))hits.push({...e,distance});}
+  // Cluster clouds are irregular: member samples, not a fictitious spherical boundary, are pick targets.
+  for(const e of projected){if(!e.cluster||e.alpha<.28)continue;const radius=e.node.radius*e.p.scale;if(Math.abs(e.p.x-x)>radius+25||Math.abs(e.p.y-y)>radius+25)continue;let best=Infinity;for(const s of e.node.samples){const p=project(s);if(p.visible)best=Math.min(best,Math.hypot(p.x-x,p.y-y));}if(best<22&&!hits.some(h=>h.node===e.node))hits.push({...e,distance:best+3});}
+  return hits.sort((a,b)=>(a.distance+(a.cluster?6:0))-(b.distance+(b.cluster?6:0)));
+}
+function updateHover(x,y){const hit=candidates(x,y)[0],node=hit?.node||null;const changed=hovered!==node;hovered=node;canvas.style.cursor=gesture?'grabbing':node?'pointer':'grab';$('tooltip').hidden=!node;if(!node)return;
+  if(changed){$('tip-text').textContent=node.nodeType==='memory'?(node.text?.length>65?node.text.slice(0,65)+'…':node.text||'无正文'):node.label;
+    $('tip-meta').textContent=node.nodeType==='memory'?typeOf(node.kind).label+' · '+(node.whenLabel||'未标注时间'):node.count+' 条记忆 · 点击进入';}
+  const tip=$('tooltip');tip.style.left=Math.max(8,Math.min(width-tip.offsetWidth-10,x+17))+'px';tip.style.top=Math.max(8,Math.min(height-tip.offsetHeight-10,y+17))+'px';
+}
+function changeZoom(factor,x=width/2,y=height/2){
+  const next=clamp(target.distance/factor,MIN_DISTANCE,MAX_DISTANCE),ratio=1-next/target.distance;
+  // Move the look-at point in the camera plane toward the cursor while dollying.
+  if(view.focal){const sx=(x-width/2)*target.distance/view.focal*ratio,sy=(y-height/2)*target.distance/view.focal*ratio,offset=cameraPlaneOffset(sx,sy);
+    target.look.x+=offset.x;target.look.y+=offset.y;target.look.z+=offset.z;}
+  target.distance=next;lastInput=performance.now();
+}
+function local(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+canvas.addEventListener('pointerdown',e=>{if(e.button!==0||gesture)return;canvas.focus({preventScroll:true});const p=local(e);gesture={id:e.pointerId,x:p.x,y:p.y,lastX:p.x,lastY:p.y,lastT:performance.now(),yaw:target.yaw,pitch:target.pitch,moved:false};pointer=null;velocity.yaw=velocity.pitch=0;$('tooltip').hidden=true;canvas.setPointerCapture(e.pointerId);lastInput=performance.now();});
+canvas.addEventListener('pointermove',e=>{const p=local(e);if(gesture){if(e.pointerId!==gesture.id)return;const dx=p.x-gesture.x,dy=p.y-gesture.y;if(Math.hypot(dx,dy)>5)gesture.moved=true;
+    if(gesture.moved){target.yaw=gesture.yaw+dx*.004;target.pitch=clamp(gesture.pitch+dy*.003,-1.2,1.2);const now=performance.now(),dt=Math.max(.016,(now-gesture.lastT)/1000);velocity.yaw=clamp((p.x-gesture.lastX)*.004/dt,-1,1);velocity.pitch=clamp((p.y-gesture.lastY)*.003/dt,-.6,.6);gesture.lastX=p.x;gesture.lastY=p.y;gesture.lastT=now;canvas.style.cursor='grabbing';}lastInput=performance.now();return;}pointer=p;updateHover(p.x,p.y);});
+canvas.addEventListener('pointerup',e=>{if(!gesture||e.pointerId!==gesture.id)return;const p=local(e),moved=gesture.moved;gesture=null;canvas.releasePointerCapture(e.pointerId);pointer=p;
+  if(!moved){velocity.yaw=velocity.pitch=0;const hits=candidates(p.x,p.y);if(hits.length){let node=hits[0].node;
+    // Prefer the actual nearest star. Cycle only nearly coincident memory stars,
+    // never from a selected star into a background cluster behind its neighbour.
+    if(!hits[0].cluster&&node===selected){const overlap=hits.filter(h=>!h.cluster&&h.distance<hits[0].distance+2.5),index=overlap.findIndex(h=>h.node===selected);node=overlap[(index+1)%overlap.length].node;}
+    if(node.nodeType==='memory')showDetail(node);else{showCluster(node);focusOn(node);}}else clearSelection();}updateHover(p.x,p.y);});
+function cancelGesture(){gesture=null;pointer=null;hovered=null;$('tooltip').hidden=true;canvas.style.cursor='grab';}
+canvas.addEventListener('pointercancel',()=>{velocity.yaw=velocity.pitch=0;cancelGesture();});canvas.addEventListener('lostpointercapture',()=>{if(gesture)cancelGesture();});canvas.addEventListener('pointerleave',()=>{if(!gesture)cancelGesture();});
+canvas.addEventListener('wheel',e=>{e.preventDefault();const p=local(e),delta=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?height:1);changeZoom(Math.exp(-clamp(delta,-200,200)*.0018),p.x,p.y);pointer=p;},{passive:false});
+$('zoom-in').onclick=()=>changeZoom(1.4);$('zoom-out').onclick=()=>changeZoom(1/1.4);$('reset').onclick=reset;$('back').onclick=exitFocus;$('close').onclick=clearSelection;
+$('first').onclick=()=>browse(1);$('next').onclick=()=>browse(1);$('previous').onclick=()=>browse(-1);$('retry').onclick=load;
+$('focus-memory').onclick=()=>{if(selected)focusOn(selected);};$('enter-cluster').onclick=()=>{if(selectedCluster)focusOn(selectedCluster);};$('close-cluster').onclick=clearSelection;
+$('toggle-animation').onclick=()=>{animationPaused=!animationPaused;$('toggle-animation').textContent=animationPaused?'播放动态':'暂停动态';$('toggle-animation').setAttribute('aria-pressed',String(!animationPaused));lastFogTime=-Infinity;};
+if(SIMULATION){const b=document.createElement('button');b.id='demo-neural';b.className='reset';b.textContent='查看神经通路';b.onclick=()=>{reset();target.distance=HOME_DISTANCE/1.9;};$('reset').before(b);document.body.classList.add('simulation');}
+canvas.addEventListener('dblclick',e=>{const p=local(e),node=candidates(p.x,p.y)[0]?.node;if(node)focusOn(node);});
+canvas.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();browse(e.key==='ArrowRight'?1:-1);}if(e.key==='+'||e.key==='=')changeZoom(1.4);if(e.key==='-')changeZoom(1/1.4);if(e.key==='0')reset();if(e.key==='Enter'&&selected)focusOn(selected);});
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(focusedNode)exitFocus();else clearSelection();}});
+// Embedded previews can report hidden while still displaying a live surface. Do not
+// proactively stop rendering on visibilitychange. Recover stalled RAF via a timer;
+// a browser may still throttle a genuinely backgrounded or frozen document.
+function resumeAnimation(){if(!frameId)frameId=requestAnimationFrame(draw);}
+document.addEventListener('visibilitychange',()=>{resumeAnimation();if(!document.hidden)load();});
+addEventListener('pageshow',resumeAnimation);addEventListener('focus',resumeAnimation);
+setInterval(()=>{if(performance.now()-lastRenderedAt>220){cancelAnimationFrame(frameId);frameId=0;draw(performance.now());}},150);
+resize();view=cameraView();renderLegend();load();setInterval(()=>{if(!document.hidden)load();},30000);frameId=requestAnimationFrame(draw);
+
+</script>
+</body>
+</html>
